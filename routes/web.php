@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminUserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -27,6 +28,17 @@ Route::prefix('administrator')->group(function () {
 
     Route::middleware(['isAdmin'])->group(function () {
         Route::get('dashboard', DashboardController::class)->name('dashboardAdmin');
+        Route::resource('users', AdminUserController::class, [
+            'names' => [
+                'index' => 'admin.users.index',
+                'create' => 'admin.users.create',
+                'store' => 'admin.users.store',
+                'show' => 'admin.users.show',
+                'edit' => 'admin.users.edit',
+                'update' => 'admin.users.update',
+                'destroy' => 'admin.users.destroy',
+            ]
+        ]);
     });
 });
 
