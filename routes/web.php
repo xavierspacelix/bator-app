@@ -1,10 +1,13 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminUserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admin\FuelController;
+use App\Http\Controllers\Admin\MerkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +40,42 @@ Route::prefix('administrator')->group(function () {
                 'edit' => 'admin.users.edit',
                 'update' => 'admin.users.update',
                 'destroy' => 'admin.users.destroy',
+            ]
+        ]);
+
+        Route::resource('categories', CategoryController::class, [
+            'names' => [
+                'index' => 'admin.categories.index',
+                'create' => 'admin.categories.create',
+                'store' => 'admin.categories.store',
+                'show' => 'admin.categories.show',
+                'edit' => 'admin.categories.edit',
+                'update' => 'admin.categories.update',
+                'destroy' => 'admin.categories.destroy',
+            ]
+        ]);
+
+        Route::resource('merks', MerkController::class, [
+            'names' => [
+                'index' => 'admin.merks.index',
+                'create' => 'admin.merks.create',
+                'store' => 'admin.merks.store',
+                'show' => 'admin.merks.show',
+                'edit' => 'admin.merks.edit',
+                'update' => 'admin.merks.update',
+                'destroy' => 'admin.merks.destroy',
+            ]
+        ]);
+
+        Route::resource('fuels', FuelController::class, [
+            'names' => [
+                'index' => 'admin.fuels.index',
+                'create' => 'admin.fuels.create',
+                'store' => 'admin.fuels.store',
+                'show' => 'admin.fuels.show',
+                'edit' => 'admin.fuels.edit',
+                'update' => 'admin.fuels.update',
+                'destroy' => 'admin.fuels.destroy',
             ]
         ]);
     });

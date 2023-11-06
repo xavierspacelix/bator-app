@@ -181,19 +181,6 @@
                  </div>
              </div>
          </div>
-         <div class="p-4 flex">
-             <div class="flex space-x-4 items-center">
-                 <label class="w-32 text-sm font-medium dark:text-white text-gray-900">Per Page</label>
-                 <select wire:model.live="perPage"
-                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-none hover:bg-gray-100  focus:z-10 focus:ring-4  dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 ">
-                     <option value="5">5</option>
-                     <option value="10">10</option>
-                     <option value="20">20</option>
-                     <option value="50">50</option>
-                     <option value="100">100</option>
-                 </select>
-             </div>
-         </div>
          <div class="p-4">
              {{ $users->links('pagination::tailwind') }}
          </div>
