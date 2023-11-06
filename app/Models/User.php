@@ -23,6 +23,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'address',
+        'no_handphone',
+        'gender',
+        'avatar',
+        'bio',
+        'dateofbirth',
+        'city_code',
+        'district_code',
+        'village_code',
+        'province_code',
     ];
 
     /**
@@ -81,5 +91,40 @@ class User extends Authenticatable
     function scopeSearch($query, $value)
     {
         $query->where('name', 'like', "%{$value}%")->orWhere('email', 'like', "%{$value}%");
+    }
+
+    public function socialMedia()
+    {
+        return $this->hasMany(Social::class);
+    }
+
+    public function seller()
+    {
+        return $this->hasOne(Seller::class);
+    }
+
+    public static function isSeller()
+    {
+        return static::whereHas('seller')->get();
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'province_code', 'code');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_code', 'code');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'district_code', 'code');
+    }
+
+    public function village()
+    {
+        return $this->belongsTo(Village::class, 'village_code', 'code');
     }
 }
