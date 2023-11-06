@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
+use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
@@ -95,5 +96,67 @@ class AuthController extends Controller
             'message' => 'Successfully Registered',
             'data' => $user,
         ]);
+    }
+
+    public function becomeSeller(User $user)
+    {
+        $user = Auth::user();
+        $requiredProperties = [
+            'address',
+            'no_handphone',
+            'gender',
+            'avatar',
+            'bio',
+            'dateofbirth',
+            'city_code',
+            'district_code',
+            'village_code',
+            'province_code',
+        ];
+
+        foreach ($requiredProperties as $property) {
+            if (is_null($user->$property)) {
+                return response()->json([
+                    'message' => 'Mohon lengkapi data diri terlebih dahulu',
+                ], 422);
+            }
+        }
+        if (!$user->seller) {
+            $seller = new Seller();
+            $user->seller()->save($seller);
+            return response()->json([
+                'message' => 'User is now a seller'
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'User is already a seller'
+            ], 400);
+        }
+    }
+
+    public function onboarding(User $user, Request $request)
+    {
+        // dd('sampe');
+        $request->user()->fill(
+            $request->validate([
+                'address' => ['required', 'string'],
+                'no_handphone' => ['required', 'unique:users,no_handphone,' . auth()->id(), 'numeric'],
+                'gender' => ['required'],
+                'avatar' => ['required'],
+                'bio' => ['required', 'string'],
+                'dateofbirth' => ['required', 'date'],
+                'province_code' => ['required'],
+                'city_code' => ['required'],
+                'district_code' => ['required'],
+                'village_code' => ['required'],
+            ])
+        );
+
+        $request->user()->save();
+
+        return response()->json([
+            'message' => 'Data user berhasil diperbarui',
+            'user' => auth()->user()
+        ], 200);
     }
 }
