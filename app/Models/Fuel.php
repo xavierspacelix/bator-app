@@ -21,4 +21,9 @@ class Fuel extends Model
     {
         return $this->hasMany(Motor::class);
     }
+
+    function scopeSearch($query, $value)
+    {
+        $query->where('name', 'like', "%{$value}%");
+    }
 }

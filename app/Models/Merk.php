@@ -57,4 +57,9 @@ class Merk extends Model
     {
         return 'slug';
     }
+
+    function scopeSearch($query, $value)
+    {
+        $query->where('name', 'like', "%{$value}%");
+    }
 }

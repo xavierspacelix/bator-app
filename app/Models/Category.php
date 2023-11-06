@@ -55,6 +55,11 @@ class Category extends Model
      */
     public function motors(): HasMany
     {
-        return $this->hasMany(Category::class);
+        return $this->hasMany(Motor::class);
+    }
+
+    function scopeSearch($query, $value)
+    {
+        $query->where('name', 'like', "%{$value}%");
     }
 }

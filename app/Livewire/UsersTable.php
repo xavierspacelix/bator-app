@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -10,7 +11,7 @@ class UsersTable extends Component
 {
 
     use WithPagination;
-    public $perPage = 5;
+
 
     #[Url(history: true)]
 
@@ -36,7 +37,7 @@ class UsersTable extends Component
                     $query->whereDoesntHave('adminUser');
                 })
                 ->latest()
-                ->paginate($this->perPage)
+                ->paginate(10)
         ]);
     }
 }

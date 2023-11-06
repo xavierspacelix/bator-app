@@ -18,8 +18,5 @@ class CategorySeeder extends Seeder
         $category = Category::create([
             'name' => $name = 'Category 1',
         ]);
-
-        $category->slug = Str::slug($name . '_' . $category->uuid);
-        $category->save();
     }
 }
