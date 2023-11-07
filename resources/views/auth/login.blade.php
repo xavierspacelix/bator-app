@@ -9,7 +9,7 @@
         </p>
     </div>
     <div class="flex justify-center">
-        <button type="button"
+        <a href="{{ route('loginProviderSocialite', 'facebook') }}"
             class="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 mr-2 ">
             <svg class="w-4 h-4 text-gray-800 dark:text-white md:mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor" viewBox="0 0 8 19">
@@ -19,8 +19,8 @@
 
             </svg>
             <span class="hidden md:block ">Login with Facebook</span>
-        </button>
-        <button type="button"
+        </a>
+        <a href="{{ route('loginProviderSocialite', 'google') }}"
             class="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 mr-2 ">
             <svg class="w-4 h-4 text-gray-800 dark:text-white md:mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor" viewBox="0 0 18 19">
@@ -29,7 +29,7 @@
                     clip-rule="evenodd" />
             </svg>
             <span class="hidden md:block ">Login with Google</span>
-        </button>
+        </a>
 
     </div>
     <div class="inline-flex items-center justify-center w-full">
@@ -84,7 +84,7 @@
     <div class="flex items-center justify-center mt-4">
         <p class="text-xs text-center sm:px-6 dark:text-gray-400">Don't have an account?
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                href="{{ route('password.request') }}">
+                href="{{ route('register') }}">
                 {{ __('Sign Up') }}
             </a>
     </div>

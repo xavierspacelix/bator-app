@@ -7,6 +7,7 @@ use Ramsey\Uuid\Uuid;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -93,10 +94,7 @@ class User extends Authenticatable
         $query->where('name', 'like', "%{$value}%")->orWhere('email', 'like', "%{$value}%");
     }
 
-    public function socialMedia()
-    {
-        return $this->hasMany(Social::class);
-    }
+
 
     public function seller()
     {
@@ -126,5 +124,15 @@ class User extends Authenticatable
     public function village()
     {
         return $this->belongsTo(Village::class, 'village_code', 'code');
+    }
+
+    /**
+     * Get all of the socialAccounts for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function socialAccounts(): HasMany
+    {
+        return $this->hasMany(SocialAccount::class);
     }
 }
