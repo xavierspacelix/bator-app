@@ -88,4 +88,16 @@ class Motor extends Model
     {
         return 'slug';
     }
+
+    function scopeSearch($query, $value)
+    {
+        $query->where('name', 'like', "%{$value}%")
+            ->orWhere('kondisi', 'like', "%{$value}%")
+            ->orWhereHas('category', function ($query) use ($value) {
+                $query->where('name', 'like', "%{$value}%");
+            })
+            ->orWhereHas('merk', function ($query) use ($value) {
+                $query->where('name', 'like', "%{$value}%");
+            });
+    }
 }
