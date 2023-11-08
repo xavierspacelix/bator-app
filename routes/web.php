@@ -2,13 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\FuelController;
+use App\Http\Controllers\Admin\MerkController;
+use App\Http\Controllers\Admin\MotorController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Admin\FuelController;
-use App\Http\Controllers\Admin\MerkController;
-use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\WelcomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,18 +81,28 @@ Route::prefix('administrator')->group(function () {
                 'destroy' => 'admin.fuels.destroy',
             ]
         ]);
-    });
-});
 
-Route::get('/', function () {
-    return view('welcome');
+        Route::resource('motors', MotorController::class, [
+            'names' => [
+                'index' => 'admin.motors.index',
+                'create' => 'admin.motors.create',
+                'store' => 'admin.motors.store',
+                'show' => 'admin.motors.show',
+                'edit' => 'admin.motors.edit',
+                'update' => 'admin.motors.update',
+                'destroy' => 'admin.motors.destroy',
+            ]
+        ]);
+    });
 });
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
+Route::middleware('guest')->group(function () {
+    Route::get('/welcome', WelcomeController::class)->name('welcome');
+});
 
 
 

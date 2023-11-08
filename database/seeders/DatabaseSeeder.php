@@ -58,6 +58,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Category::factory()->count(20)->create();
-        User::factory()->count(100)->create();
+        User::factory()->count(10000)->create();
     }
 }

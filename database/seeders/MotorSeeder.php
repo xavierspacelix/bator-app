@@ -51,18 +51,3 @@ class MotorSeeder extends Seeder
         $motor->save();
     }
 }
-
-
-// slug
-// seller_id
-// category_id
-// merk_id
-// fuel_id
-// name
-// description
-// image
-// price
-// kondisi
-// tahun
-// jarak_tempuh
-// kapasitas_tank
