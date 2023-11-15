@@ -1,6 +1,6 @@
 import defaultTheme from "tailwindcss/defaultTheme";
 import forms from "@tailwindcss/forms";
-
+import typography from "@tailwindcss/typography";
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
@@ -9,7 +9,6 @@ export default {
         "./resources/views/**/*.blade.php",
         "./node_modules/flowbite/**/*.js",
     ],
-
     safelist: [
         "w-64",
         "w-1/2",
@@ -45,6 +44,7 @@ export default {
             },
             fontFamily: {
                 sans: [
+                    "Poppins",
                     "Inter",
                     "ui-sans-serif",
                     "system-ui",
@@ -99,5 +99,5 @@ export default {
         },
     },
 
-    plugins: [forms, require("flowbite/plugin")],
+    plugins: [forms, require("flowbite/plugin"), typography],
 };
