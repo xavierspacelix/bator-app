@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\MotorController as ControllersMotorController;
 use App\Http\Controllers\WelcomeController;
 
 /*
@@ -100,9 +101,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('guest')->group(function () {
-    Route::get('/welcome', WelcomeController::class)->name('welcome');
-});
+Route::get('/', WelcomeController::class);
+Route::get('motor/{motor}', [ControllersMotorController::class, 'show'])->name('detailMotor');
 
 
 
