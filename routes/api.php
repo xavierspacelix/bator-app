@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\FuelController;
 use App\Http\Controllers\Api\MerkController;
 use App\Http\Controllers\Api\MotorController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\DependencyDropdownController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,3 +51,8 @@ Route::get('/fuels', [FuelController::class, 'index']);
 // Motor routes
 Route::get('/motors', [MotorController::class, 'index']);
 Route::get('/motor/{motor}', [MotorController::class, 'show']);
+
+// Province, City, District, Villages routes
+Route::get('/city', [DependencyDropdownController::class, 'cities'])->name('cities');
+Route::get('/district', [DependencyDropdownController::class, 'districts'])->name('districts');
+Route::get('/village', [DependencyDropdownController::class, 'villages'])->name('villages');

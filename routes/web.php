@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserDashboard;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\Admin\FuelController;
 use App\Http\Controllers\Admin\MerkController;
 use App\Http\Controllers\Admin\MotorController;
@@ -9,9 +11,9 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
+
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\MotorController as ControllersMotorController;
-use App\Http\Controllers\WelcomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -97,10 +99,6 @@ Route::prefix('administrator')->group(function () {
     });
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::get('/', WelcomeController::class);
 Route::get('motor/{motor}', [ControllersMotorController::class, 'show'])->name('detailMotor');
 
@@ -108,9 +106,13 @@ Route::get('motor/{motor}', [ControllersMotorController::class, 'show'])->name('
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/dashboard', UserDashboard::class)->name('userDashboard');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Public API
+
 
 require __DIR__ . '/auth.php';
