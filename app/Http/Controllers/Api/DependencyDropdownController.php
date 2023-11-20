@@ -10,6 +10,12 @@ use App\Http\Controllers\Controller;
 
 class DependencyDropdownController extends Controller
 {
+    public function provinces()
+    {
+        return response()->json([
+            'province' => Province::pluck('name', 'code')
+        ]);
+    }
     public function cities(Request $request, Province $province)
     {
         $provinsi = Province::where('code', $request->code)->firstOrFail();

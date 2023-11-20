@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\DashboardController;
 
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\MotorController as ControllersMotorController;
+use App\Http\Controllers\SellerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,15 +100,21 @@ Route::prefix('administrator')->group(function () {
     });
 });
 
-Route::get('/', WelcomeController::class);
+Route::get('/', WelcomeController::class)->name('welcome');
 Route::get('motor/{motor}', [ControllersMotorController::class, 'show'])->name('detailMotor');
 
 
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', UserDashboard::class)->name('userDashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Become A Seller
+    Route::get('/become-a-seller', [ProfileController::class, 'becomeSeller'])->name('becomeSeller');
+    Route::patch('/become-a-seller', [ProfileController::class, 'becomeSellerStore'])->name('becomeSellerStore');
+    // Sell Motor
+    Route::get('jual', [SellerController::class, 'index'])->name('jual');
+    // Profile User & Dashboard User
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::delete('/avatar/delete', [ProfileController::class, 'destroyAvatar'])->name('avatar.delete');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });

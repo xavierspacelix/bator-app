@@ -4,13 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use App\Models\Seller;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password as FacadesPassword;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
@@ -36,7 +42,7 @@ class AuthController extends Controller
 
     public function getUserDetails()
     {
-        if (Auth::check()) {
+        if (Auth::user()) {
             return response()->json([
                 'message' => 'Successfully',
                 'data' => Auth::user()
@@ -62,7 +68,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
-
+        event(new Registered($user));
         return response()->json([
             'message' => 'Successfully Registered',
             'data' => $user,
@@ -80,50 +86,98 @@ class AuthController extends Controller
     {
         $user = auth()->user();
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            // Tambahkan validasi lain sesuai kebutuhan
+        $validator = $request->validate([
+            'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'name' => ['required', 'string', 'max:255'],
+            // 'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($request->user()->id)],
+            'address' => ['string'],
+            'no_handphone' => ['numeric'],
+            'gender' => ['string'],
+            'bio' => ['string'],
+            'dateofbirth' => ['date'],
+            'city_code' => ['numeric'],
+            'district_code' => ['numeric'],
+            'village_code' => ['numeric'],
+            'province_code' => ['numeric'],
         ]);
 
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        // Perbarui kolom lain sesuai kebutuhan
+        $request->user()->fill($validator);
 
         $user->save();
 
+        if ($request->hasFile('avatar')) {
+            if ($request->oldImage) {
+                Storage::delete($request->oldImage);
+            }
+            $slugAvatar = Str::slug($request->user()->name . '-' . $request->user()->uuid);
+            $avatarPath = $request->file('avatar')->storeAs('images/avatars', $slugAvatar . '-' . time() . '.' . $request->file('avatar')->getClientOriginalExtension(), 'public');
+            $request->user()->avatar = $avatarPath;
+            $request->user()->save();
+        }
         return response()->json([
-            'message' => 'Successfully Registered',
+            'message' => 'Successfully Updated',
             'data' => $user,
         ]);
     }
-
-    public function becomeSeller(User $user)
+    /**
+     * Update the user's password.
+     */
+    public function updatePassword(Request $request)
     {
-        $user = Auth::user();
-        $requiredProperties = [
-            'address',
-            'no_handphone',
-            'gender',
-            'avatar',
-            'bio',
-            'dateofbirth',
-            'city_code',
-            'district_code',
-            'village_code',
-            'province_code',
-        ];
+        $validated = $request->validateWithBag('updatePassword', [
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
 
-        foreach ($requiredProperties as $property) {
-            if (is_null($user->$property)) {
-                return response()->json([
-                    'message' => 'Mohon lengkapi data diri terlebih dahulu',
-                ], 422);
-            }
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil ganti Password'
+        ], 200);
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        $status = FacadesPassword::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status == FacadesPassword::RESET_LINK_SENT) {
+            return response()->json(['message' => __('Password reset link sent.')], 200);
+        } else {
+            return response()->json(['message' => __('Unable to send password reset link.')], 400);
         }
-        if (!$user->seller) {
-            $seller = new Seller();
-            $user->seller()->save($seller);
+    }
+    public function becomeSeller(User $user, Request $request)
+    {
+        $validator = $request->validate([
+            'address' => ['required'],
+            'no_handphone' => ['required'],
+            'gender' => ['required'],
+            'bio' => ['required'],
+            'dateofbirth' => ['required'],
+            'city_code' => ['required'],
+            'district_code' => ['required'],
+            'village_code' => ['required'],
+            'province_code' => ['required'],
+            'terms' => ['accepted']
+        ]);
+
+        $request->user()->fill($validator);
+
+        $request->user()->save();
+
+        if (!$request->user()->seller) {
+            Seller::create([
+                'user_id' => $request->user()->id,
+            ]);
             return response()->json([
                 'message' => 'User is now a seller'
             ], 200);
@@ -132,31 +186,5 @@ class AuthController extends Controller
                 'message' => 'User is already a seller'
             ], 400);
         }
-    }
-
-    public function onboarding(User $user, Request $request)
-    {
-        // dd('sampe');
-        $request->user()->fill(
-            $request->validate([
-                'address' => ['required', 'string'],
-                'no_handphone' => ['required', 'unique:users,no_handphone,' . auth()->id(), 'numeric'],
-                'gender' => ['required'],
-                'avatar' => ['required'],
-                'bio' => ['required', 'string'],
-                'dateofbirth' => ['required', 'date'],
-                'province_code' => ['required'],
-                'city_code' => ['required'],
-                'district_code' => ['required'],
-                'village_code' => ['required'],
-            ])
-        );
-
-        $request->user()->save();
-
-        return response()->json([
-            'message' => 'Data user berhasil diperbarui',
-            'user' => auth()->user()
-        ], 200);
     }
 }

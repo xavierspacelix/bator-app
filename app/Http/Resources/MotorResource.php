@@ -23,13 +23,13 @@ class MotorResource extends JsonResource
             'description' => $this->description,
             'kapasitas_tank' => $this->kapasitas_tank,
             'jarak_tempuh' => $this->jarak_tempuh,
-            'image' => $this->image,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'category' => $this->category->name,
             'fuel' => $this->fuel->name,
             'merk' => $this->merk->name,
-            'seller' => $this->seller->user
+            'seller' => $this->seller->user,
+            'image_urls' => ImageMotorResource::collection($this->image)
         ];
     }
 }

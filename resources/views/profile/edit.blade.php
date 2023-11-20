@@ -40,10 +40,11 @@
                     <div
                         class="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800 w-full">
                         <div class="items-center sm:flex xl:block 2xl:flex sm:space-x-4 xl:space-x-0 2xl:space-x-4">
-<input type="hidden" name="oldImage" value="{{ $user->avatar }}">
-                            <img class="mb-4 rounded-lg w-28 h-28 sm:mb-0 xl:mb-4 2xl:mb-0"
-                                src="{{ asset('storage/'. $user->avatar) }}"
-                                alt="Jese picture">
+                            <input type="hidden" name="oldImage" value="{{ $user->avatar }}">
+
+                            <img id="avatarPreview" class="mb-4 rounded-lg w-28 h-28 sm:mb-0 xl:mb-4 2xl:mb-0"
+                                src="{{ $user->avatar ? asset('storage/' . $user->avatar) : 'https://ui-avatars.com/api/?name=' . $user->name . '&background=1A56DB&color=fff' }}"
+                                alt="{{ $user->name }}">
                             <div>
                                 <h3 class="mb-1 text-xl font-bold text-gray-900 dark:text-white">Profile picture
                                 </h3>
@@ -60,10 +61,10 @@
                                             </path>
                                             <path d="M9 13h2v5a1 1 0 11-2 0v-5z"></path>
                                         </svg>
-                                        <input type="file" class="hidden" id="avatar" name="avatar">
+                                        <input type="file" class="hidden" id="avatar" name="avatar" onchange="previewAvatar()">
                                         Upload picture
                                     </label>
-                                    <button type="button"
+                                    <button type="button" id="deleteAvatar"
                                         class="py-2 px-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                                         Delete
                                     </button>
@@ -99,5 +100,50 @@
             </div>
         </div>
     </div>
+    @push('customJS')
+        <script>
+            function previewAvatar() {
+                const input = document.getElementById('avatar');
+                const preview = document.getElementById('avatarPreview');
 
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                    };
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $(function() {
+                // Handle klik tombol hapus avatar
+                $("#deleteAvatar").on("click", function() {
+                    if (confirm("Apakah Anda yakin ingin menghapus avatar?")) {
+                        window.location.href = window.location.href;
+                        // Kirim permintaan AJAX untuk menghapus avatar
+                        $.ajax({
+                            url: "{{ route('avatar.delete') }}", // Ganti dengan route yang sesuai
+                            type: "DELETE",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(data) {
+                                // Perbarui tampilan di sisi klien setelah penghapusan berhasil
+                                $("#deleteAvatar").remove();
+                                $("img").attr("src",
+                                    "{{ asset('storage/' . $user->avatar) }}"
+                                ); // Ganti dengan path default avatar yang sesuai
+
+                            },
+                            error: function(xhr, status, error) {
+                                // Tangani kesalahan jika diperlukan
+                                console.error(error);
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+    @endpush
 </x-frontend-layout>
