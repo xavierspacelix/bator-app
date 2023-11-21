@@ -26,7 +26,7 @@
                 <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Apakah Anda Yakin Ingin Menghapus
                     Model <br>{{ $modelMotor->name }}?</h3>
                 <div class="inline-flex">
-                    <form action="{{ route('admin.type.destroy', $modelMotor) }}" method="post">
+                    <form action="{{ route('admin.type.destroy', $modelMotor->slug) }}" method="post">
                         @method('DELETE')
                         @csrf
                         <button type="submit"

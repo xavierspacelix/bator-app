@@ -47,12 +47,17 @@ class MotorController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->images);
         $user = auth()->user();
         $seller = $user->seller;
 
         if (!$seller) {
-            return response()->json(['message' => 'User ini bukan seller'], 403);
+            return response()->json([
+                'status' => 'redirecting',
+                'message' => 'User Bukan Seller'
+            ]);
         }
+
         $seller_id = $seller->id;
         $request->validate([
             'category_id' => 'required|exists:categories,id',
@@ -65,15 +70,15 @@ class MotorController extends Controller
             'tahun' => 'required|integer|min:1900|max:' . date('Y'),
             'jarak_tempuh' => 'required|integer',
             'kapasitas_tank' => 'required|string',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi untuk setiap image
-
+            'type_model_motor_id' => 'required|exists:type_model_motors,id',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi untuk setiap image
         ]);
 
         $motor = Motor::create([
             'category_id' => $request->category_id,
             'merk_id' => $request->merk_id,
             'fuel_id' => $request->fuel_id,
-            'name' => $request->name,
+            'name' => $name = $request->name,
             'description' => $request->description,
             'price' => $request->price,
             'kondisi' => $request->kondisi,
@@ -81,7 +86,10 @@ class MotorController extends Controller
             'jarak_tempuh' => $request->jarak_tempuh,
             'kapasitas_tank' => $request->kapasitas_tank,
             'seller_id' => $seller_id,
+            'type_model_motor_id' => $request->type_model_motor_id
         ]);
+
+
 
         $images = [];
 
@@ -89,14 +97,15 @@ class MotorController extends Controller
             foreach ($request->file('images') as $image) {
                 $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
 
-                $image->storeAs('motor_images', $imageName);
+                $imagePath = $image->storeAs('motor_images', $imageName);
 
-                $motorImage = new ImageMotor(['image_path' => $imageName]);
+                $motorImage = new ImageMotor(['image_path' => 'motor_images/' . $imageName]);
                 $motor->image()->save($motorImage);
                 $images[] = $motorImage;
             }
         }
-
+        $motor->slug = Str::slug($name . '_' . $motor->uuid);
+        $motor->save();
         return response()->json([
             'message' => 'Motor berhasil disimpan',
             'data' => new MotorResource($motor)

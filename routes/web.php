@@ -64,17 +64,10 @@ Route::prefix('administrator')->group(function () {
             ]
         ]);
 
-        Route::resource('type-model-motor', TypeModelMotorController::class, [
-            'names' => [
-                'index' => 'admin.type.index',
-                'create' => 'admin.type.create',
-                'store' => 'admin.type.store',
-                'show' => 'admin.type.show',
-                'edit' => 'admin.type.edit',
-                'update' => 'admin.type.update',
-                'destroy' => 'admin.type.destroy',
-            ]
-        ]);
+        Route::get('type-model-motor', [TypeModelMotorController::class, 'index'])->name('admin.type.index');
+        Route::post('type-model-motor', [TypeModelMotorController::class, 'store'])->name('admin.type.store');
+        Route::delete('type-model-motor/{typemodelmotor}', [TypeModelMotorController::class, 'destroy'])->name('admin.type.destroy');
+        Route::put('type-model-motor/{typemodelmotor}', [TypeModelMotorController::class, 'update'])->name('admin.type.update');
         Route::resource('merks', MerkController::class, [
             'names' => [
                 'index' => 'admin.merks.index',
@@ -126,6 +119,7 @@ Route::middleware(['auth'])->group(function () {
     // Sell Motor
     Route::get('/post', [SellerController::class, 'view'])->name('jualView');
     Route::get('/jual', [SellerController::class, 'index'])->name('jual');
+    Route::post('/jual', [SellerController::class, 'store'])->name('jualStore');
     // Profile User & Dashboard User
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::delete('/avatar/delete', [ProfileController::class, 'destroyAvatar'])->name('avatar.delete');

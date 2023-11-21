@@ -49,7 +49,10 @@ class TypeModelMotor extends Model
 
     function scopeSearch($query, $value)
     {
-        $query->where('name', 'like', "%{$value}%");
+        $query->where('name', 'like', "%{$value}%")
+            ->orWhereHas('merk', function ($query) use ($value) {
+                $query->where('name', 'like', "%{$value}%");
+            });
     }
 
 

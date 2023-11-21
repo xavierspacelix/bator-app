@@ -32,9 +32,25 @@ class TypeModelMotorController extends Controller
         flash()->addSuccess('Data Model Motor Berhasil Disimpan');
         return back();
     }
+    public function update(Request $request, TypeModelMotor $typemodelmotor)
+    {
+        // dd($typemodelmotor);
+        $request->validate([
+            'name' => ['required', 'string'],
+            'merk_id' => ['required'],
+        ]);
 
+        $typemodelmotor->update([
+            'name' => $request->name,
+            'merk_id' => $request->merk_id
+        ]);
+        flash()->addSuccess('Data Model Motor Berhasil Diubah');
+        return back();
+    }
     public function destroy(TypeModelMotor $typemodelmotor)
     {
-        dd($typemodelmotor);
+        $typemodelmotor->delete();
+        flash()->addSuccess('Data Model Motor Berhasil Dihapus');
+        return back();
     }
 }

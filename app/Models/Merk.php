@@ -64,12 +64,12 @@ class Merk extends Model
     }
 
     /**
-     * Get all of the models for the Merk
+     * Get all of the typemodelmotors for the Merk
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function models(): HasMany
+    public function typemodelmotors(): HasMany
     {
-        return $this->hasMany(ModelMotor::class);
+        return $this->hasMany(TypeModelMotor::class);
     }
 }
