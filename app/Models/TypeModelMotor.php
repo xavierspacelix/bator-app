@@ -6,26 +6,14 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Merk extends Model
+class TypeModelMotor extends Model
 {
     use HasFactory, HasUuids;
 
     protected $guarded = [];
-
-    /**
-     * Get all of the motors for the Merk
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function motors(): HasMany
-    {
-        return $this->hasMany(Motor::class);
-    }
-
-
     /**
      * Generate a new UUID for the model.
      */
@@ -45,17 +33,18 @@ class Merk extends Model
 
     protected static function booted()
     {
-        static::creating(function ($mekr) {
-            $mekr->slug = Str::slug($mekr->name . '_' . Uuid::uuid4());
+        static::creating(function ($merk) {
+            $merk->slug = Str::slug($merk->name . '_' . Uuid::uuid4());
         });
     }
-
     /**
-     * Get the route key for the model.
+     * Get the merk that owns the Models
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function getRouteKeyName(): string
+    public function merk(): BelongsTo
     {
-        return 'slug';
+        return $this->belongsTo(Merk::class);
     }
 
     function scopeSearch($query, $value)
@@ -63,13 +52,12 @@ class Merk extends Model
         $query->where('name', 'like', "%{$value}%");
     }
 
+
     /**
-     * Get all of the models for the Merk
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * Get the route key for the model.
      */
-    public function models(): HasMany
+    public function getRouteKeyName(): string
     {
-        return $this->hasMany(ModelMotor::class);
+        return 'slug';
     }
 }

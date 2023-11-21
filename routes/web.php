@@ -13,6 +13,8 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
 
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admin\ModelController;
+use App\Http\Controllers\Admin\TypeModelMotorController;
 use App\Http\Controllers\MotorController as ControllersMotorController;
 use App\Http\Controllers\SellerController;
 
@@ -62,6 +64,17 @@ Route::prefix('administrator')->group(function () {
             ]
         ]);
 
+        Route::resource('type-model-motor', TypeModelMotorController::class, [
+            'names' => [
+                'index' => 'admin.type.index',
+                'create' => 'admin.type.create',
+                'store' => 'admin.type.store',
+                'show' => 'admin.type.show',
+                'edit' => 'admin.type.edit',
+                'update' => 'admin.type.update',
+                'destroy' => 'admin.type.destroy',
+            ]
+        ]);
         Route::resource('merks', MerkController::class, [
             'names' => [
                 'index' => 'admin.merks.index',
@@ -106,12 +119,13 @@ Route::get('motor/{motor}', [ControllersMotorController::class, 'show'])->name('
 
 
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // Become A Seller
     Route::get('/become-a-seller', [ProfileController::class, 'becomeSeller'])->name('becomeSeller');
     Route::patch('/become-a-seller', [ProfileController::class, 'becomeSellerStore'])->name('becomeSellerStore');
     // Sell Motor
-    Route::get('jual', [SellerController::class, 'index'])->name('jual');
+    Route::get('/post', [SellerController::class, 'view'])->name('jualView');
+    Route::get('/jual', [SellerController::class, 'index'])->name('jual');
     // Profile User & Dashboard User
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::delete('/avatar/delete', [ProfileController::class, 'destroyAvatar'])->name('avatar.delete');
