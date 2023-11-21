@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 
 class Motor extends Model
 {
@@ -99,5 +100,15 @@ class Motor extends Model
             ->orWhereHas('merk', function ($query) use ($value) {
                 $query->where('name', 'like', "%{$value}%");
             });
+    }
+
+    /**
+     * Get all of the image for the Motor
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function image(): HasMany
+    {
+        return $this->hasMany(ImageMotor::class);
     }
 }

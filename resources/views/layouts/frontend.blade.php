@@ -18,16 +18,17 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
+    <div class="min-h-screen">
         @include('layouts.navbar')
 
         <!-- Page Content -->
-        <main>
+        <main class="bg-white">
             {{ $slot }}
         </main>
-        <x-footer />
     </div>
+    <x-footer />
     @livewireScripts
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.1.1/datepicker.min.js"></script>
     @stack('customJS')
 </body>
 

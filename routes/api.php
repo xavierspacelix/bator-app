@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\FuelController;
 use App\Http\Controllers\Api\MerkController;
 use App\Http\Controllers\Api\MotorController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\DependencyDropdownController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,14 +22,14 @@ use App\Http\Controllers\Api\CategoryController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
-
+Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user-details', [AuthController::class, 'getUserDetails']);
-    Route::put('/user', [AuthController::class, 'update']);
+    Route::put('/user/settings/update-details', [AuthController::class, 'update']);
+    Route::put('/user/settings/update-password', [AuthController::class, 'updatePassword']);
     Route::post('/user/become-seller', [AuthController::class, 'becomeSeller']);
-    Route::patch('/user/onboarding', [AuthController::class, 'onboarding']);
 
     // Motor
     Route::post('/motor/add', [MotorController::class, 'store']);
@@ -39,7 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
 // Public Data
 // Category routes
 Route::get('/categories', [CategoryController::class, 'index']);
-// Route::get('/category/{category}', [CategoryController::class, 'show']);
+Route::get('/category/{category}', [CategoryController::class, 'show']);
 
 // Merk routes
 Route::get('/merks', [MerkController::class, 'index']);
@@ -50,3 +51,9 @@ Route::get('/fuels', [FuelController::class, 'index']);
 // Motor routes
 Route::get('/motors', [MotorController::class, 'index']);
 Route::get('/motor/{motor}', [MotorController::class, 'show']);
+
+// Province, City, District, Villages routes
+Route::get('/province', [DependencyDropdownController::class, 'provinces']);
+Route::get('/city', [DependencyDropdownController::class, 'cities'])->name('cities');
+Route::get('/district', [DependencyDropdownController::class, 'districts'])->name('districts');
+Route::get('/village', [DependencyDropdownController::class, 'villages'])->name('villages');

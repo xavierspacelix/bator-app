@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserDashboard;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\Admin\FuelController;
 use App\Http\Controllers\Admin\MerkController;
 use App\Http\Controllers\Admin\MotorController;
@@ -9,9 +11,12 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
+
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admin\ModelController;
+use App\Http\Controllers\Admin\TypeModelMotorController;
 use App\Http\Controllers\MotorController as ControllersMotorController;
-use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\SellerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +64,17 @@ Route::prefix('administrator')->group(function () {
             ]
         ]);
 
+        Route::resource('type-model-motor', TypeModelMotorController::class, [
+            'names' => [
+                'index' => 'admin.type.index',
+                'create' => 'admin.type.create',
+                'store' => 'admin.type.store',
+                'show' => 'admin.type.show',
+                'edit' => 'admin.type.edit',
+                'update' => 'admin.type.update',
+                'destroy' => 'admin.type.destroy',
+            ]
+        ]);
         Route::resource('merks', MerkController::class, [
             'names' => [
                 'index' => 'admin.merks.index',
@@ -97,20 +113,27 @@ Route::prefix('administrator')->group(function () {
     });
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::get('/', WelcomeController::class);
+Route::get('/', WelcomeController::class)->name('welcome');
 Route::get('motor/{motor}', [ControllersMotorController::class, 'show'])->name('detailMotor');
 
 
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::middleware(['auth'])->group(function () {
+    // Become A Seller
+    Route::get('/become-a-seller', [ProfileController::class, 'becomeSeller'])->name('becomeSeller');
+    Route::patch('/become-a-seller', [ProfileController::class, 'becomeSellerStore'])->name('becomeSellerStore');
+    // Sell Motor
+    Route::get('/post', [SellerController::class, 'view'])->name('jualView');
+    Route::get('/jual', [SellerController::class, 'index'])->name('jual');
+    // Profile User & Dashboard User
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::delete('/avatar/delete', [ProfileController::class, 'destroyAvatar'])->name('avatar.delete');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Public API
+
 
 require __DIR__ . '/auth.php';

@@ -29,7 +29,7 @@
         @else
             <div class="grid grid-cols-1 gap-3 mb-6 lg:mb-16 md:grid-cols-3 lg:grid-cols-4">
                 @foreach ($motors as $item)
-                <a href="{{route('detailMotor', $item)}}" wire:navigate
+                <a href="{{route('detailMotor', $item)}}"
                     class="relative flex w-full max-w-sm flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
                     <div class="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl" href="#">
                         <img class="object-cover w-full"

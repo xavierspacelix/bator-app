@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Models\Merk;
 use App\Models\Motor;
 use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\MotorResource;
+use App\Models\ImageMotor;
+use Illuminate\Support\Facades\Storage;
 
 class MotorController extends Controller
 {
@@ -29,7 +32,6 @@ class MotorController extends Controller
             'motors' => MotorResource::collection($motors)
         ], 200);
     }
-
 
     public function show(Motor $motor)
     {
@@ -58,12 +60,13 @@ class MotorController extends Controller
             'fuel_id' => 'required|exists:fuels,id',
             'name' => 'required|string',
             'description' => 'required|string',
-            'image' => 'required|string',
             'price' => 'required|integer',
             'kondisi' => 'required|in:baru,bekas',
             'tahun' => 'required|integer|min:1900|max:' . date('Y'),
             'jarak_tempuh' => 'required|integer',
             'kapasitas_tank' => 'required|string',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi untuk setiap image
+
         ]);
 
         $motor = Motor::create([
@@ -72,7 +75,6 @@ class MotorController extends Controller
             'fuel_id' => $request->fuel_id,
             'name' => $request->name,
             'description' => $request->description,
-            'image' => $request->image,
             'price' => $request->price,
             'kondisi' => $request->kondisi,
             'tahun' => $request->tahun,
@@ -80,6 +82,20 @@ class MotorController extends Controller
             'kapasitas_tank' => $request->kapasitas_tank,
             'seller_id' => $seller_id,
         ]);
+
+        $images = [];
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
+
+                $image->storeAs('motor_images', $imageName);
+
+                $motorImage = new ImageMotor(['image_path' => $imageName]);
+                $motor->image()->save($motorImage);
+                $images[] = $motorImage;
+            }
+        }
 
         return response()->json([
             'message' => 'Motor berhasil disimpan',
@@ -102,7 +118,6 @@ class MotorController extends Controller
             'fuel_id' => 'required|exists:fuels,id',
             'name' => 'required|string',
             'description' => 'required|string',
-            'image' => 'required|string',
             'price' => 'required|integer',
             'kondisi' => 'required|in:baru,bekas',
             'tahun' => 'required|integer|min:1900|max:' . date('Y'),
@@ -116,7 +131,6 @@ class MotorController extends Controller
             'fuel_id' => $request->fuel_id,
             'name' => $request->name,
             'description' => $request->description,
-            'image' => $request->image,
             'price' => $request->price,
             'kondisi' => $request->kondisi,
             'tahun' => $request->tahun,
@@ -139,6 +153,12 @@ class MotorController extends Controller
             return response()->json(['message' => 'Akses tidak diizinkan'], 403);
         }
 
+        // Hapus gambar-gambar terkait dari storage
+        $motor->image()->each(function ($image) {
+            if ($image->image_path && Storage::disk('public')->exists($image->image_path)) {
+                Storage::disk('public')->delete($image->image_path);
+            }
+        });
         $motor->delete();
 
         return response()->json(['message' => 'Motor berhasil dihapus'], 200);
