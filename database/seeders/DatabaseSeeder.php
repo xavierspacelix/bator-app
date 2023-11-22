@@ -51,13 +51,13 @@ class DatabaseSeeder extends Seeder
             CitySeeder::class,
             DistrictSeeder::class,
             VillageSeeder::class,
-            CategorySeeder::class,
-            MerkSeeder::class,
-            FuelSeeder::class,
-            MotorSeeder::class,
+            // CategorySeeder::class,
+            // MerkSeeder::class,
+            // FuelSeeder::class,
+            // MotorSeeder::class,
         ]);
 
-        Category::factory()->count(20)->create();
-        User::factory()->count(15)->create();
+        // Category::factory()->count(20)->create();
+        // User::factory()->count(15)->create();
     }
 }

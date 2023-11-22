@@ -15,6 +15,8 @@ class MotorController extends Controller
 
     public function show(Motor $motor)
     {
+        // $motor = Motor::with('seller', 'category', 'merk', 'fuel', 'image', 'type_model_motor');
+        // dd($motor);
         return view('motors.single-page', [
             'motor' => $motor
         ]);

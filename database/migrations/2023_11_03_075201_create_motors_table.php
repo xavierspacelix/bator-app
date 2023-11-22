@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('fuel_id')->constrained()->onDelete(null);
             $table->string('name');
             $table->string('description');
-            $table->integer('price');
+            $table->string('price');
             $table->enum('kondisi', ['baru', 'bekas']);
             $table->year('tahun');
             $table->integer('jarak_tempuh');

@@ -5,12 +5,13 @@ namespace App\Models;
 use Ramsey\Uuid\Uuid;
 use App\Models\Seller;
 use Illuminate\Support\Str;
+use App\Models\TypeModelMotor;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Storage;
 
 class Motor extends Model
 {
@@ -110,5 +111,15 @@ class Motor extends Model
     public function image(): HasMany
     {
         return $this->hasMany(ImageMotor::class);
+    }
+
+    /**
+     * Get the typemodelmotor that owns the Motor
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function type_model_motor(): BelongsTo
+    {
+        return $this->belongsTo(TypeModelMotor::class);
     }
 }

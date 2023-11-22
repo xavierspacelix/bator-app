@@ -47,7 +47,7 @@ class MotorController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->images);
+        // dd($request->all());
         $user = auth()->user();
         $seller = $user->seller;
 
@@ -65,7 +65,7 @@ class MotorController extends Controller
             'fuel_id' => 'required|exists:fuels,id',
             'name' => 'required|string',
             'description' => 'required|string',
-            'price' => 'required|integer',
+            'price' => 'required|numeric',
             'kondisi' => 'required|in:baru,bekas',
             'tahun' => 'required|integer|min:1900|max:' . date('Y'),
             'jarak_tempuh' => 'required|integer',

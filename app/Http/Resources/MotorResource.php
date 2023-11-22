@@ -19,7 +19,7 @@ class MotorResource extends JsonResource
             'name' => $this->name,
             'kondisi' => $this->kondisi,
             'tahun' => $this->tahun,
-            'price' => $this->harga,
+            'price' => $this->price,
             'description' => $this->description,
             'kapasitas_tank' => $this->kapasitas_tank,
             'jarak_tempuh' => $this->jarak_tempuh,

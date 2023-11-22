@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\MerkController;
 use App\Http\Controllers\Api\MotorController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DependencyDropdownController;
+use App\Http\Controllers\Api\TypeModelMotorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +45,8 @@ Route::get('/category/{category}', [CategoryController::class, 'show']);
 
 // Merk routes
 Route::get('/merks', [MerkController::class, 'index']);
-
+// Model Route
+Route::get('/type-model-motor', [TypeModelMotorController::class, 'index']);
 // Fuel routes
 Route::get('/fuels', [FuelController::class, 'index']);
 

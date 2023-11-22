@@ -32,11 +32,20 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->firstOrFail();
 
         $token = $user->createToken($user->name . '_auth_token')->plainTextToken;
+        if ($user->seller) {
+            return response()->json([
+                'message' => 'Login success',
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'seller' => 'true'
+            ]);
+        }
 
         return response()->json([
             'message' => 'Login success',
             'access_token' => $token,
-            'token_type' => 'Bearer'
+            'token_type' => 'Bearer',
+            'seller' => 'false'
         ]);
     }
 
