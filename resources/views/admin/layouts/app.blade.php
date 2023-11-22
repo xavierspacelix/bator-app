@@ -28,19 +28,15 @@
 </head>
 
 <body class="bg-white dark:bg-gray-800 no-scrollbar">
-    {{-- {{ partial "navbar-dashboard" . }} --}}
-    @include('admin.layouts.navbar')
-    <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
-
+    <div class="antialiased bg-gray-50 dark:bg-gray-900">
+        {{-- Navbar --}}
+        @include('admin.layouts.navbar')
+        {{-- SideBar --}}
         @include('admin.layouts.sidebar')
-
-        <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
-            <main class="min-h-screen">
-                {{ $slot }}
-            </main>
-            @include('admin.layouts.footer')
-        </div>
-
+        {{-- Main Content --}}
+        <main class="md:ml-64 h-auto pt-20 min-h-screen bg-white">
+            {{ $slot }}
+        </main>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/datepicker.min.js"></script>
